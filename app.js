@@ -20,7 +20,7 @@ const routes = require('./routes/index');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000, MONGODB_URL = 'mongodb://127.0.0.1/bitfilmsdb' } = process.env;
+const { PORT = 3001, MONGODB_URL = 'mongodb://127.0.0.1/bitfilmsdb' } = process.env;
 const app = express();
 
 app.use(cors());
