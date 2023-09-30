@@ -19,9 +19,15 @@ router.post(
       director: Joi.string().required(),
       year: Joi.string().required(),
       description: Joi.string().required(),
-      image: Joi.string().required(),
-      trailerLink: Joi.string().required(),
-      thumbnail: Joi.string().required(),
+      image: Joi.string().pattern(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+      ).required(),
+      trailerLink: Joi.string().pattern(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+      ).required(),
+      thumbnail: Joi.string().pattern(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+      ).required(),
       nameRU: Joi.string().required(),
       nameEN: Joi.string().required(),
       duration: Joi.number().required(),
