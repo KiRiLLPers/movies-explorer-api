@@ -54,20 +54,26 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
+  const findAndModify = () => User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    { runValidators: true },
+  );
 
-  if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { name, email }, { runValidators: true })
-      .then((user) => res.status(200).send({ email: user.email, name: user.name }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          next(new ErrorValidation(err.message));
-        } else {
-          next(new ErrorNotFound('Пользователь по указанному _id не найден.'));
-        }
-
-        next(err);
+  User.find({ email })
+    .then(([user]) => {
+      if (user && user._id.toString() !== req.user._id) {
+        throw new ErrorConflict('Пользователь с таким Email уже существует!');
+      }
+      return findAndModify();
+    })
+    .then(() => {
+      res.send({
+        name,
+        email,
       });
-  }
+    })
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
@@ -96,7 +102,7 @@ module.exports.getUserMe = (req, res, next) => {
         return next(new ErrorNotFound('Пользователь по указанному _id не найден.'));
       }
 
-      return res.status(200).send({ email: user.email, name: user.name });
+      return res.status(200).send({ email: user.email, name: user.name, _id: user._id });
     })
     .catch((err) => next(err));
 };

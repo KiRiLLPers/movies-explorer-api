@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  movieId: {
+  id: {
     type: Number,
     required: true,
   },
@@ -69,6 +69,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model('movie', userSchema);

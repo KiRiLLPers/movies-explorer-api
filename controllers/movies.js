@@ -26,7 +26,7 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    movieId,
+    id,
     nameRU,
     nameEN,
   } = req.body;
@@ -40,7 +40,7 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    movieId,
+    id,
     nameRU,
     nameEN,
     owner: req.user._id,
@@ -56,15 +56,16 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-
-  Movie.findById(movieId)
+  const { id } = req.params;
+  console.log(req.user._id);
+  Movie.findOne({ id, owner: req.user._id.toString() })
     .orFail()
     .then((movie) => {
-      if (req.user._id !== movie.owner._id.toString()) {
+      console.log(movie);
+      if (req.user._id !== movie.owner.toString()) {
         next(new ErrorForbidden('Нельзя удалять фильм из чужого списка!'));
       } else {
-        Movie.findByIdAndRemove(movieId)
+        Movie.findByIdAndRemove(movie._id)
           .orFail()
           .then(() => {
             res.status(200).send({ message: 'Фильм удален из списка!' });
